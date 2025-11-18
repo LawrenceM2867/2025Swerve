@@ -34,7 +34,7 @@ public interface ModuleIO {
         public Rotation2d[] odTPos = new Rotation2d[] {}; //odometry turn positions
     }
 
-    public default void updateInputs(ModuleIOInputs inputs) {} //updates the inputs for logging
+    public default void updateInputs(ModuleIOInputs inputs) {} //updates the inputs
     public default void setDOpenLoop(double output) {} //runs the drive motor output with open loop control
     public default void setTOpenLoop(double output) {} //runs the turn motor output with open loop control
     public default void setDVel(double velRadPerS) {} //runs the drive motor at the velocity
