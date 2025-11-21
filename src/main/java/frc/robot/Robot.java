@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drivetrain.TunerConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -28,7 +32,13 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+  @Override
+  public void robotInit(){
+    m_robotContainer.resetGyro().ignoringDisable(true).schedule();
+  }
+
   /**
+   * 
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
@@ -41,7 +51,10 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    Threads.setCurrentThreadPriority(true, 99);
+
     CommandScheduler.getInstance().run();
+    Threads.setCurrentThreadPriority(true, 10);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
