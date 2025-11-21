@@ -15,9 +15,6 @@ public interface GyroIO {
         public boolean connect = false; //is gyro connected
         public Rotation2d yPos = new Rotation2d(); //yaw position
         public double yVelRadPerS = 0.0; //yaw velocity in radians per second
-
-        public double[] odYTime = new double[] {}; //odometry timestamps
-        public Rotation2d[] odYPos = new Rotation2d[] {}; //odometry yaw positions
     }
 
     public default void updateInputs(GyroIOInputs inputs) {} //updates the inputs

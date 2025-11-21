@@ -4,18 +4,22 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
 public class GyroIOPigeon2 implements GyroIO {
-    private Pigeon2 g = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
-    private StatusSignal<Angle> y = g.getYaw();
-    private StatusSignal<AngularVelocity> yVel = g.getAngularVelocityZWorld();
+    private Pigeon2 g = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id); //creates a new gyro
+    private StatusSignal<Angle> y = g.getYaw(); //value for the yaw
+    private StatusSignal<AngularVelocity> yVel = g.getAngularVelocityZWorld(); //value for the yaw velocity
 
     public GyroIOPigeon2() {
         g.getConfigurator().apply(new Pigeon2Configuration());
@@ -25,6 +29,8 @@ public class GyroIOPigeon2 implements GyroIO {
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-
+        inputs.connect = BaseStatusSignal.refreshAll(y, yVel).equals(StatusCode.OK);
+        inputs.yPos = Rotation2d.fromDegrees(y.getValueAsDouble());
+        inputs.yVelRadPerS = Units.degreesToRadians(yVel.getValueAsDouble());
     }
 }
