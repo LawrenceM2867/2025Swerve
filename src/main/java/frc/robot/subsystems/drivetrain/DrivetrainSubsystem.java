@@ -35,7 +35,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   );
 
   private GyroIO gIO;
-  private GyroIOInputs gInputs = new GyroIOInputs();
+  private GyroIOInputsAutoLogged gInputs = new GyroIOInputsAutoLogged();
   private Module[] mods = new Module[4];
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModTrans());
