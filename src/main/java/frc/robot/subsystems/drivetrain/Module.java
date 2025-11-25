@@ -17,7 +17,7 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 /** Add your docs here. */
 public class Module {
     private ModuleIO io;
-    private ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
+    private ModuleIOInputs inputs = new ModuleIOInputs();
     private int i;
     private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst;
 

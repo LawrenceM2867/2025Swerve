@@ -111,7 +111,8 @@ public class ModuleIOTalonFX implements ModuleIO {
             : SensorDirectionValue.CounterClockwise_Positive;
         cancoder.getConfigurator().apply(cancoderConfig);
 
-
+        drivePos = driveTalon.getPosition();
+        driveVel = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
         driveCurrent = driveTalon.getStatorCurrent();
 
@@ -122,7 +123,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         turnCurrent = turnTalon.getStatorCurrent();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            Drive.ODOMETRY_FREQUENCY, drivePos, turnPos);
+            DrivetrainSubsystem.ODOMETRY_FREQUENCY, drivePos, turnPos);
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             driveVel,
