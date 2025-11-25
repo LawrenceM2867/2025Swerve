@@ -18,12 +18,10 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 public class Module {
     private ModuleIO io;
     private ModuleIOInputs inputs = new ModuleIOInputs();
-    private int i;
     private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst;
 
-    public Module(ModuleIO io, int i, SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst) {
+    public Module(ModuleIO io, SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst) {
         this.io = io;
-        this.i = i;
         this.cnst = cnst;
     }
 
