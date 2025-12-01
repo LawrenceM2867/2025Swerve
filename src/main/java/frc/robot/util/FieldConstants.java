@@ -131,7 +131,6 @@ public class FieldConstants {
               new Transform2d(new Translation2d(algaeOffset, algaeYOffset), Rotation2d.k180deg))
         };
 
-    private static List<Pose2d> tagList = List.of(aprilTags);
     private static List<Pose2d> leftBranchList = List.of(leftBranches);
     private static List<Pose2d> rightBranchList = List.of(rightBranches);
     public static List<Pose2d> algaePoses = List.of(algaeLocations);

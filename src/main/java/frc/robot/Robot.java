@@ -4,13 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drivetrain.TunerConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
