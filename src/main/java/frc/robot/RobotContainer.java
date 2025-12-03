@@ -60,6 +60,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     drive.setDefaultCommand(DriveCommands.joystickDrive(drive, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX()));
+    m_driverController.y().onTrue(resetGyro());
   }
 
   public Command resetGyro() {

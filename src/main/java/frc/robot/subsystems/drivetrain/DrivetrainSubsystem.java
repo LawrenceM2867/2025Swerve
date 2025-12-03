@@ -138,7 +138,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public double getMaxLinSpdMPerSec() { return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); }
 
-  public double getMaxAngSpdRadPerSec() { return getMaxAngSpdRadPerSec() / DRIVE_BASE_RADIUS; }
+  public double getMaxAngSpdRadPerSec() { return this.getMaxLinSpdMPerSec() / DRIVE_BASE_RADIUS; }
 
   public static Translation2d[] getModTrans() {
     return new Translation2d[] {
