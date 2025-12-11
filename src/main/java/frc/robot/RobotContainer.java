@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.drivetrain.GyroIOPigeon2;
+import frc.robot.subsystems.drivetrain.ModuleIOSim;
 import frc.robot.subsystems.drivetrain.ModuleIOTalonFX;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.util.AllianceFlipUtil;
@@ -36,10 +37,10 @@ public class RobotContainer {
   public RobotContainer() {
     drive = new DrivetrainSubsystem(
       new GyroIOPigeon2(),
-      new ModuleIOTalonFX(TunerConstants.FrontLeft),
-      new ModuleIOTalonFX(TunerConstants.FrontRight),
-      new ModuleIOTalonFX(TunerConstants.BackLeft),
-      new ModuleIOTalonFX(TunerConstants.BackRight)
+      new ModuleIOSim(TunerConstants.FrontLeft),
+      new ModuleIOSim(TunerConstants.FrontRight),
+      new ModuleIOSim(TunerConstants.BackLeft),
+      new ModuleIOSim(TunerConstants.BackRight)
     );
 
     // Configure the trigger bindings
