@@ -59,11 +59,13 @@ public class ModuleIOSim implements ModuleIO {
           driveFFVolts + driveController.calculate(driveSim.getAngularVelocityRadPerSec());
     } else {
       driveController.reset();
+      driveAppliedVolts = 0.0;
     }
     if (turnClosedLoop) {
       turnAppliedVolts = turnController.calculate(turnSim.getAngularPositionRad());
     } else {
       turnController.reset();
+      turnAppliedVolts = 0.0;
     }
 
     // Update sim state
@@ -111,6 +113,7 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void setTPos(Rotation2d rotation) {
     turnClosedLoop = true;
+    turnController.reset();
     turnController.setSetpoint(rotation.getRadians());
   }
 }
