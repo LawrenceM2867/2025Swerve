@@ -28,7 +28,11 @@ public interface ModuleIO {
         public double tCurrentAmps = 0.0; //turn current in amps
         public double tTempC = 0.0; //turn temperature in celsius
         public double encOffset = 0.0; //encoder offset in radians
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> ad544638fb32afbd9ececc570afa5fb454a5d22c
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositionsRad = new double[] {};
         public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
