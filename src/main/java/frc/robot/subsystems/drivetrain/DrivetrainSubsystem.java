@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drivetrain.GyroIO.GyroIOInputs;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   static double ODOMETRY_FREQUENCY = new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
@@ -40,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   static final Lock odometryLock = new ReentrantLock();
   private GyroIO gIO;
-  private GyroIOInputsAutoLogged gInputs = new GyroIOInputsAutoLogged();
+  private GyroIOInputs gInputs = new GyroIOInputs();
   private Module[] mods = new Module[4];
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModTrans());
