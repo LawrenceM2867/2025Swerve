@@ -19,9 +19,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
 public class GyroIOPigeon2 implements GyroIO {
-    private Pigeon2 g = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id); //creates a new gyro
-    private StatusSignal<Angle> y = g.getYaw(); //value for the yaw
-    private StatusSignal<AngularVelocity> yVel = g.getAngularVelocityZWorld(); //value for the yaw velocity
+    private Pigeon2 g = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id); 
+    private StatusSignal<Angle> y = g.getYaw(); 
+    private StatusSignal<AngularVelocity> yVel = g.getAngularVelocityZWorld();
 
     private final Queue<Double> yawPositionQueue;
     private final Queue<Double> yawTimestampQueue;

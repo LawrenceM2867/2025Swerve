@@ -66,7 +66,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    odometryLock.lock(); // Prevents odometry updates while reading data
+    odometryLock.lock();
     gIO.updateInputs(gInputs);
     Logger.processInputs("Drive/Gyro", gInputs);
     for (Module m : mods) { m.periodic(); }
@@ -77,10 +77,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     double[] sampleTimestamps =
-        mods[0].getOdometryTimestamps(); // All signals are sampled together
+        mods[0].getOdometryTimestamps();
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
-      // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
       SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
@@ -93,17 +92,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         lModPos[moduleIndex] = modulePositions[moduleIndex];
       }
 
-      // Update gyro angle
       if (gInputs.connect) {
-        // Use the real gyro angle
         rawGRot = gInputs.odometryYawPositions[i];
       } else {
-        // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGRot = rawGRot.plus(new Rotation2d(twist.dtheta));
       }
 
-      // Apply update
       poseEst.updateWithTime(sampleTimestamps[i], rawGRot, modulePositions);
     }
   }

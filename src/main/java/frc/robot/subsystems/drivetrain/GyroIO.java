@@ -12,13 +12,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public interface GyroIO {
     @AutoLog
     public static class GyroIOInputs {
-        public boolean connect = false; //is gyro connected
-        public Rotation2d yPos = new Rotation2d(); //yaw position
-        public double yVelRadPerS = 0.0; //yaw velocity in radians per second
+        public boolean connect = false; 
+        public Rotation2d yPos = new Rotation2d(); 
+        public double yVelRadPerS = 0.0; 
     
         public double[] odometryYawTimestamps = new double[] {};
         public Rotation2d[] odometryYawPositions = new Rotation2d[] {};
     }
 
-    public default void updateInputs(GyroIOInputs inputs) {} //updates the inputs
+    public default void updateInputs(GyroIOInputs inputs) {}
 }
