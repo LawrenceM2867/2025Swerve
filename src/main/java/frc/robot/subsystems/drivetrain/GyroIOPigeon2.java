@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import java.util.Queue;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -21,10 +23,16 @@ public class GyroIOPigeon2 implements GyroIO {
     private StatusSignal<Angle> y = g.getYaw(); //value for the yaw
     private StatusSignal<AngularVelocity> yVel = g.getAngularVelocityZWorld(); //value for the yaw velocity
 
+    private final Queue<Double> yawPositionQueue;
+    private final Queue<Double> yawTimestampQueue;
+
     public GyroIOPigeon2() {
         g.getConfigurator().apply(new Pigeon2Configuration());
         g.getConfigurator().setYaw(0.0);
         g.optimizeBusUtilization();
+
+        yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+        yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(y.clone());
     }
 
     @Override
@@ -32,5 +40,14 @@ public class GyroIOPigeon2 implements GyroIO {
         inputs.connect = BaseStatusSignal.refreshAll(y, yVel).equals(StatusCode.OK);
         inputs.yPos = Rotation2d.fromDegrees(y.getValueAsDouble());
         inputs.yVelRadPerS = Units.degreesToRadians(yVel.getValueAsDouble());
+        
+        inputs.odometryYawTimestamps =
+            yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+        inputs.odometryYawPositions =
+            yawPositionQueue.stream()
+                .map((Double value) -> Rotation2d.fromDegrees(value))
+                .toArray(Rotation2d[]::new);
+        yawTimestampQueue.clear();
+        yawPositionQueue.clear();
     }
 }
