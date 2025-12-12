@@ -90,6 +90,10 @@ public class ModuleIOSim implements ModuleIO {
     inputs.tVelRadPerS = turnSim.getAngularVelocityRadPerSec();
     inputs.tApplyVolts = turnAppliedVolts;
     inputs.tCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
+
+    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+    inputs.odometryDrivePositionsRad = new double[] {inputs.dPosRad};
+    inputs.odometryTurnPositions = new Rotation2d[] {inputs.tPos};
   }
 
   @Override

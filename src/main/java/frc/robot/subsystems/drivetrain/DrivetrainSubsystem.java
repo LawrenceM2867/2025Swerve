@@ -6,13 +6,18 @@ package frc.robot.subsystems.drivetrain;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -33,6 +38,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     )
   );
 
+  static final Lock odometryLock = new ReentrantLock();
   private GyroIO gIO;
   private GyroIOInputsAutoLogged gInputs = new GyroIOInputsAutoLogged();
   private Module[] mods = new Module[4];
@@ -50,33 +56,56 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrainSubsystem. */
   public DrivetrainSubsystem(GyroIO gIO, ModuleIO fLIO, ModuleIO fRIO, ModuleIO bLIO, ModuleIO bRIO) {
     this.gIO = gIO;
-    mods[0] = new Module(fLIO, TunerConstants.FrontLeft);
-    mods[1] = new Module(fRIO, TunerConstants.FrontRight);
-    mods[2] = new Module(bLIO, TunerConstants.BackLeft);
-    mods[3] = new Module(bRIO, TunerConstants.BackRight);
+    mods[0] = new Module(fLIO,0, TunerConstants.FrontLeft);
+    mods[1] = new Module(fRIO,1, TunerConstants.FrontRight);
+    mods[2] = new Module(bLIO,2, TunerConstants.BackLeft);
+    mods[3] = new Module(bRIO,3, TunerConstants.BackRight);
+
+    PhoenixOdometryThread.getInstance().start();
   }
 
   @Override
   public void periodic() {
+    odometryLock.lock(); // Prevents odometry updates while reading data
     gIO.updateInputs(gInputs);
+    Logger.processInputs("Drive/Gyro", gInputs);
     for (Module m : mods) { m.periodic(); }
+    odometryLock.unlock();
 
     if (DriverStation.isDisabled()) {
       for (Module m : mods) { m.stop(); }
     }
 
-    SwerveModulePosition[] modPos = new SwerveModulePosition[4];
-    SwerveModulePosition[] modD = new SwerveModulePosition[4];
-    for (int i = 0; i < 4; i++) {
-      modPos[i] = mods[i].getPos();
-      modD[i] = new SwerveModulePosition(modPos[i].distanceMeters - lModPos[i].distanceMeters, modPos[i].angle);
-      lModPos[i] = modPos[i];
+    double[] sampleTimestamps =
+        mods[0].getOdometryTimestamps(); // All signals are sampled together
+    int sampleCount = sampleTimestamps.length;
+    for (int i = 0; i < sampleCount; i++) {
+      // Read wheel positions and deltas from each module
+      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+        modulePositions[moduleIndex] = mods[moduleIndex].getOdometryPositions()[i];
+        moduleDeltas[moduleIndex] =
+            new SwerveModulePosition(
+                modulePositions[moduleIndex].distanceMeters
+                    - lModPos[moduleIndex].distanceMeters,
+                modulePositions[moduleIndex].angle);
+        lModPos[moduleIndex] = modulePositions[moduleIndex];
+      }
+
+      // Update gyro angle
+      if (gInputs.connected) {
+        // Use the real gyro angle
+        rawGRot = gInputs.odometryYawPositions[i];
+      } else {
+        // Use the angle delta from the kinematics and module deltas
+        Twist2d twist = kinematics.toTwist2d(moduleDeltas);
+        rawGRot = rawGRot.plus(new Rotation2d(twist.dtheta));
+      }
+
+      // Apply update
+      poseEst.updateWithTime(sampleTimestamps[i], rawGRot, modulePositions);
     }
-
-    if (gInputs.connect) { rawGRot = gInputs.yPos; }
-    else { rawGRot = rawGRot.plus(new Rotation2d(kinematics.toTwist2d(modD).dtheta)); }
-
-    poseEst.update(rawGRot, modPos);
   }
 
   public void runVel(ChassisSpeeds spds) {

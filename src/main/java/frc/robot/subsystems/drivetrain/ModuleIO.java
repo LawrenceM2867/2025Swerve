@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
 public interface ModuleIO {
-    @AutoLog 
+    @AutoLog
     public static class ModuleIOInputs {
         public boolean dConnect = false; //is drive connected
         public double dPosRad = 0.0; //drive position in radians
@@ -28,6 +28,10 @@ public interface ModuleIO {
         public double tCurrentAmps = 0.0; //turn current in amps
         public double tTempC = 0.0; //turn temperature in celsius
         public double encOffset = 0.0; //encoder offset in radians
+
+        public double[] odometryTimestamps = new double[] {};
+        public double[] odometryDrivePositionsRad = new double[] {};
+        public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
     }
 
     public default void updateInputs(ModuleIOInputs inputs) {} //updates the inputs

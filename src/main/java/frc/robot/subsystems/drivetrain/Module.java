@@ -4,10 +4,11 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -16,16 +17,32 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public class Module {
     private ModuleIO io;
+    private final int index;
     private ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst;
 
-    public Module(ModuleIO io, SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst) {
+    private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
+
+    public Module(ModuleIO io, int index, SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst) {
         this.io = io;
         this.cnst = cnst;
+        this.index = index;
     }
 
     public void periodic() {
         io.updateInputs(inputs);
+
+        Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
+
+    // Calculate positions for odometry
+        int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
+        odometryPositions = new SwerveModulePosition[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+            double positionMeters = inputs.odometryDrivePositionsRad[i] * cnst.WheelRadius;
+            Rotation2d angle = inputs.odometryTurnPositions[i];
+            odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+        }
+
     }
 
     public void runSt(SwerveModuleState ste) {
@@ -64,6 +81,14 @@ public class Module {
 
     public SwerveModuleState getSte() {
         return new SwerveModuleState(getVelMPerS(), getAngle());
+    }
+
+    public SwerveModulePosition[] getOdometryPositions() {
+        return odometryPositions;
+    }
+
+    public double[] getOdometryTimestamps() {
+        return inputs.odometryTimestamps;
     }
 
     public double getWheelRadiusCharPos() {
