@@ -41,7 +41,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   static final Lock odometryLock = new ReentrantLock();
   private GyroIO gIO;
-  private GyroIOInputs gInputs = new GyroIOInputs();
+  private GyroIOInputsAutoLogged gInputs = new GyroIOInputsAutoLogged();
   private Module[] mods = new Module[4];
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModTrans());
@@ -95,7 +95,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       }
 
       // Update gyro angle
-      if (gInputs.connected) {
+      if (gInputs.connect) {
         // Use the real gyro angle
         rawGRot = gInputs.odometryYawPositions[i];
       } else {

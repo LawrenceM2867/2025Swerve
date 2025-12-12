@@ -19,7 +19,7 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 public class Module {
     private ModuleIO io;
     private final int index;
-    private ModuleIOInputs inputs = new ModuleIOInputs();
+    private ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> cnst;
 
     private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
